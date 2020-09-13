@@ -29,6 +29,7 @@ bgX2 = sWidth
 # Fonts and sounds
 myfont = pygame.font.SysFont("Calibri", 30, True, True)
 overFont = pygame.font.SysFont("Calibri", 40, True)
+hpFont = pygame.font.SysFont("Calibri", 20, True)
 scoreSound = pygame.mixer.Sound(os.path.join("assets","score.wav"))
 hurtSound = pygame.mixer.Sound(os.path.join("assets", "hurt.wav"))
 
@@ -102,7 +103,7 @@ class pipes(object):
 def gameOver(DS):
     overText = overFont.render("Game Over !", 1, BLACK)
     overRect = overText.get_rect()
-    overRect.center = (sWidth//2, sHeight//2)
+    overRect.center = (sWidth//2, sHeight//2 - 25)
  
     descText = myfont.render("Press right click to restart the game!", 1, (0,0,0))
     descRect = descText.get_rect()
@@ -119,6 +120,7 @@ def gameOver(DS):
                 if event.button == 3: #Right click
                     return True
 
+        DS.fill(WHITE)
         DS.blit(overText, overRect)
         DS.blit(descText, descRect)
         pygame.display.update()
@@ -134,6 +136,9 @@ def drawWindow(score):
     textRect = scoreText.get_rect()
     textRect.center = (sWidth - 80, 40)
     DS.blit(scoreText, textRect)
+
+    hpText = hpFont.render("Health", 1, BLACK)
+    DS.blit(hpText, (30, 10))
 
     player.draw(DS) 
     pygame.display.update()
@@ -153,6 +158,9 @@ i = 0
 # Main loop
 run =  True
 while run:
+    if player.y >= sHeight or player.y + player.height < 0:
+        player.lifePoints = 0
+
     if player.lifePoints == 0:
         restart = gameOver(DS)
         if not restart:
